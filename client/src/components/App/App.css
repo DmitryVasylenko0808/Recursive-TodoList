@@ -1,0 +1,17 @@
+.container {
+    width: 670px;
+    margin: 0 auto;
+    padding: 60px 30px;
+}
+
+.add-btn {
+    width: 150px;
+    background-color: blueviolet;
+    font-weight: 700;
+
+    color: white;
+}
+
+.add-btn:disabled {
+    background-color: #af5cfcb9;
+}

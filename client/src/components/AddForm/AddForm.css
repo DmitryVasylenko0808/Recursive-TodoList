@@ -1,0 +1,15 @@
+.add-form {
+    margin-bottom: 40px;
+    background-color: white;
+    border: 1px solid #d8d8d8;
+
+    display: flex;
+
+}
+
+.add-input {
+    flex: auto;
+
+    padding: 10px 16px;
+    font-size: 20px;
+}
