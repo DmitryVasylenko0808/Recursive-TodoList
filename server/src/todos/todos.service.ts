@@ -67,21 +67,8 @@ export class TodosService {
     }
 
     async delete(id: number) {
-        const todo = await this.prismaService.todo.findUnique({
-            where: { id: Number(id) }
-        });
-
-        await this.deleteTodoChildren(todo);
-        await this.prismaService.todo.delete({
-            where: { id: Number(id) }
-        });
-        await this.prismaService.todo.updateMany({
-            where: { parentId: todo.parentId },
-            data: { 
-                order: { 
-                    decrement: 1 
-                } 
-            }
+        await this.prismaService.todo.delete({ 
+            where: { id: Number(id) }  
         });
     }
 
@@ -140,40 +127,6 @@ export class TodosService {
                 if (todos.length) {
                     await this.toggleTodoChildren(todos, value);
                 }
-            })
-        }
-    }
-
-    private async deleteTodoChildren(data: Todo | Todo[]) {
-        if (!Array.isArray(data)) {
-            const todos = await this.prismaService.todo.findMany({
-                where: { parentId: data.id }
-            });
-
-            if (todos.length) {
-                await this.deleteTodoChildren(todos);
-            }
-        } else {
-            data.forEach(async t => {
-                const todos = await this.prismaService.todo.findMany({
-                    where: { parentId: t.id }
-                });
-                
-                if (todos.length) {
-                    await this.deleteTodoChildren(todos);
-                }
-            })
-        }
-
-        if (!Array.isArray(data)) {
-            await this.prismaService.todo.deleteMany({
-                where: { parentId: data.id },
-            });
-        } else {
-            data.forEach(async t => {
-                await this.prismaService.todo.deleteMany({
-                    where: { parentId: t.id },
-                });
             })
         }
     }
