@@ -9,7 +9,7 @@ import { ToggleTodoDTO } from './dto/toggle-todo.dto';
 export class TodosService {
     constructor(private prismaService: PrismaService) {}
 
-    async getAll() {
+    async getAll(): Promise<Todo[]> {
         const fetchedTodos = await this.prismaService.todo.findMany({ 
             orderBy: {
                 parentId: "desc"
@@ -24,7 +24,7 @@ export class TodosService {
         return res;
     }
 
-    async add(data: AddTodoDTO) {
+    async add(data: AddTodoDTO): Promise<void> { 
         const aggregations = await this.prismaService.todo.aggregate({
             where: { parentId: data.parentId },
             _count: { id: true }
@@ -38,14 +38,14 @@ export class TodosService {
         })
     }
 
-    async edit(data: EditTodoDTO, id: number) {
+    async edit(data: EditTodoDTO, id: number): Promise<void> { 
         await this.prismaService.todo.update({
             where: { id: Number(id) },
             data
         })
     }
 
-    async toggle(data: ToggleTodoDTO, id: number) {
+    async toggle(data: ToggleTodoDTO, id: number): Promise<void> {
         const toggledTodo = await this.prismaService.todo.update({
             where: { id: Number(id) },
             data: {
@@ -65,13 +65,13 @@ export class TodosService {
         await this.toggleTodoChildren([toggledTodo], data.value);
     }
 
-    async delete(id: number) {
+    async delete(id: number): Promise<void> {
         await this.prismaService.todo.delete({ 
             where: { id: Number(id) }  
         });
     }
 
-    async swap(firstId: number, secondId: number) {
+    async swap(firstId: number, secondId: number): Promise<void> {
         const firstTodo = await this.prismaService.todo.findUnique({
             where: { id: Number(firstId) }
         });
@@ -100,7 +100,7 @@ export class TodosService {
             .sort((a, b) => b.order - a.order);
     }
 
-    private async toggleTodoChildren(data: Todo[], value: boolean) {
+    private async toggleTodoChildren(data: Todo[], value: boolean): Promise<void> {
         if (!data.length) {
             return;
         }
