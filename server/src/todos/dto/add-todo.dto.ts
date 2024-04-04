@@ -2,11 +2,11 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class AddTodoDTO  {
     @IsNotEmpty({ message: "Заголовок не должен быть пустым" })
-    title: string;
+    readonly title: string;
 
     @IsString()
-    description?: string;
+    readonly description?: string;
 
     @IsNumber()
-    parentId?: number;
+    readonly parentId?: number;
 }

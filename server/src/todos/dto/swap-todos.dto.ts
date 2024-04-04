@@ -1,4 +1,4 @@
-export type SwapTodosDTO = {
-    firstId: number;
-    secondId: number;
+export class SwapTodosDTO {
+    readonly firstId: number;
+    readonly secondId: number;
 }

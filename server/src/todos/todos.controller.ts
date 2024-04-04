@@ -16,12 +16,12 @@ export class TodosController {
 
     @Post()
     async add(@Body() body: AddTodoDTO) {
-        await this.todosService.add(body);
+        return this.todosService.add(body);
     } 
 
     @Patch(":id")
     async edit(@Body() body: EditTodoDTO, @Param("id") id: number) {
-        await this.todosService.edit(body, id);
+        return this.todosService.edit(body, id);
     }
 
     @Patch("toggle/:id") 
@@ -31,7 +31,7 @@ export class TodosController {
 
     @Patch("swap/:firstId/:secondId") 
     async swap(@Param() params: SwapTodosDTO) {
-        await this.todosService.swap(params.firstId, params.secondId)
+        return this.todosService.swap(params.firstId, params.secondId)
     }
 
     @Delete(":id")

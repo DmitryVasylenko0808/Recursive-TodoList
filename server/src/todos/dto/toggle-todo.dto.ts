@@ -1,3 +1,3 @@
-export type ToggleTodoDTO = {
-    value: boolean
+export class ToggleTodoDTO {
+    readonly value: boolean
 };

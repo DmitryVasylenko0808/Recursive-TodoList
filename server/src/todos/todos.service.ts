@@ -79,14 +79,16 @@ export class TodosService {
             where: { id: Number(secondId) }
         });
 
-        await this.prismaService.todo.update({
+        const updateFirst = this.prismaService.todo.update({
             where: { id: Number(firstId) },
             data: { order: secondTodo.order }
         });
-        await this.prismaService.todo.update({
+        const updateSecond = this.prismaService.todo.update({
             where: { id: Number(secondId) },
             data: { order: firstTodo.order }
         });
+
+        await this.prismaService.$transaction([updateFirst, updateSecond]);
     }
 
     private packingTodos(todos: Todo[], parentId?: number): Todo[] {
