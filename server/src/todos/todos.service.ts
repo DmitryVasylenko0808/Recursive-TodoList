@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Todo } from '@prisma/client';
-import { TodoWithChildren } from './todos.types';
 import { AddTodoDTO } from './dto/add-todo.dto';
 import { EditTodoDTO } from './dto/edit-todo.dto';
 import { ToggleTodoDTO } from './dto/toggle-todo.dto';
@@ -10,7 +9,7 @@ import { ToggleTodoDTO } from './dto/toggle-todo.dto';
 export class TodosService {
     constructor(private prismaService: PrismaService) {}
 
-    async getAll(): Promise<TodoWithChildren[]> {
+    async getAll() {
         const fetchedTodos = await this.prismaService.todo.findMany({ 
             orderBy: {
                 parentId: "desc"
@@ -25,7 +24,7 @@ export class TodosService {
         return res;
     }
 
-    async add(data: AddTodoDTO): Promise<void> {
+    async add(data: AddTodoDTO) {
         const aggregations = await this.prismaService.todo.aggregate({
             where: { parentId: data.parentId },
             _count: { id: true }
@@ -42,7 +41,7 @@ export class TodosService {
     async edit(data: EditTodoDTO, id: number) {
         await this.prismaService.todo.update({
             where: { id: Number(id) },
-            data: data
+            data
         })
     }
 
@@ -51,7 +50,7 @@ export class TodosService {
             where: { id: Number(id) },
             data: {
                 status: data.value
-            }
+            },
         });
 
         if (toggledTodo.parentId && !data.value) {
@@ -63,7 +62,7 @@ export class TodosService {
             });
         }
 
-        await this.toggleTodoChildren(toggledTodo, data.value);
+        await this.toggleTodoChildren([toggledTodo], data.value);
     }
 
     async delete(id: number) {
@@ -90,7 +89,7 @@ export class TodosService {
         });
     }
 
-    private packingTodos(todos: Todo[], parentId?: number): any {
+    private packingTodos(todos: Todo[], parentId?: number): Todo[] {
         parentId = parentId ?? todos[0].parentId;
 
         return todos
@@ -99,35 +98,24 @@ export class TodosService {
             .sort((a, b) => b.order - a.order);
     }
 
-    private async toggleTodoChildren(data: Todo | Todo[], value: boolean) {
-        if (!Array.isArray(data)) {
+    private async toggleTodoChildren(data: Todo[], value: boolean) {
+        if (!data.length) {
+            return;
+        }
+
+        data.forEach(async t => {
             await this.prismaService.todo.updateMany({
-                where: { parentId: data.id },
+                where: { parentId: t.id },
                 data: { status: value },
             });
-            
+        
             const todos = await this.prismaService.todo.findMany({
-                where: { parentId: data.id }
+                where: { parentId: t.id }
             });
-
+        
             if (todos.length) {
                 await this.toggleTodoChildren(todos, value);
             }
-        } else {
-            data.forEach(async t => {
-                await this.prismaService.todo.updateMany({
-                    where: { parentId: t.id },
-                    data: { status: value },
-                });
-    
-                const todos = await this.prismaService.todo.findMany({
-                    where: { parentId: t.id }
-                });
-    
-                if (todos.length) {
-                    await this.toggleTodoChildren(todos, value);
-                }
-            })
-        }
+        });
     }
 }

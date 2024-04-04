@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { TodosService } from './todos.service';
-import { TodoWithChildren } from './todos.types';
 import { AddTodoDTO } from './dto/add-todo.dto';
 import { EditTodoDTO } from './dto/edit-todo.dto';
 import { ToggleTodoDTO } from './dto/toggle-todo.dto';
@@ -11,7 +10,7 @@ export class TodosController {
     constructor(private todosService: TodosService) {}
 
     @Get()
-    async getAll(): Promise<TodoWithChildren[]> {
+    async getAll() {
         return this.todosService.getAll();
     }
 
