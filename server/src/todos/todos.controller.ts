@@ -34,8 +34,8 @@ export class TodosController {
 
     @Patch(":id/swap") 
     @HttpCode(204)
-    async swap(@Param() params: SwapTodosDTO): Promise<void> {
-        return this.todosService.swap(params.firstId, params.secondId)
+    async swap(@Param("id") id: number, @Body("siblingId") siblingId: number): Promise<void> {
+        return this.todosService.swap(id, siblingId)
     }
 
     @Delete(":id")
