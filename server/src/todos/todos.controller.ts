@@ -3,7 +3,6 @@ import { TodosService } from './todos.service';
 import { AddTodoDTO } from './dto/add-todo.dto';
 import { EditTodoDTO } from './dto/edit-todo.dto';
 import { ToggleTodoDTO } from './dto/toggle-todo.dto';
-import { SwapTodosDTO } from './dto/swap-todos.dto';
 import { Todo } from '@prisma/client';
 
 @Controller("todos")
