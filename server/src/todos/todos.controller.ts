@@ -6,7 +6,7 @@ import { ToggleTodoDTO } from './dto/toggle-todo.dto';
 import { SwapTodosDTO } from './dto/swap-todos.dto';
 import { Todo } from '@prisma/client';
 
-@Controller('api')
+@Controller("todos")
 export class TodosController {
     constructor(private todosService: TodosService) {}
 
@@ -26,13 +26,13 @@ export class TodosController {
         return this.todosService.edit(body, id);
     }
 
-    @Patch("toggle/:id") 
+    @Patch(":id/toggle") 
     @HttpCode(204)
     async toggle(@Body() body: ToggleTodoDTO, @Param("id") id: number): Promise<void> {
         return this.todosService.toggle(body, id);
     }
 
-    @Patch("swap/:firstId/:secondId") 
+    @Patch(":id/swap") 
     @HttpCode(204)
     async swap(@Param() params: SwapTodosDTO): Promise<void> {
         return this.todosService.swap(params.firstId, params.secondId)
