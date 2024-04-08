@@ -11,19 +11,11 @@ import {
 
 type TodoItemProps = {
   data: Todo;
-  isFirst: boolean;
-  isLast: boolean;
   prev?: Todo;
   next?: Todo;
 };
 
-const TodoItem: React.FC<TodoItemProps> = ({
-  data,
-  isFirst,
-  isLast,
-  prev,
-  next,
-}) => {
+const TodoItem: React.FC<TodoItemProps> = ({ data, prev, next }) => {
   const [deleteTodo] = useDeleteTodoMutation();
   const [toggleTodo] = useToggleTodoMutation();
   const [swapTodos] = useSwapTodosMutation();
@@ -52,9 +44,9 @@ const TodoItem: React.FC<TodoItemProps> = ({
 
   const handleSwap = (sibling?: Todo) => {
     if (sibling) {
-      const firstId = data.id;
-      const secondId = sibling.id;
-      swapTodos({ firstId, secondId });
+      const id = data.id;
+      const siblingId = sibling.id;
+      swapTodos({ id, siblingId });
     }
   };
 
@@ -78,7 +70,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
             <button
               className="btn-todo"
               onClick={() => handleSwap(next)}
-              disabled={isLast}
+              disabled={!next}
               aria-label="down"
             >
               <RiArrowDownSFill />
@@ -86,7 +78,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
             <button
               className="btn-todo"
               onClick={() => handleSwap(prev)}
-              disabled={isFirst}
+              disabled={!prev}
               aria-label="up"
             >
               <RiArrowUpSFill />
@@ -120,8 +112,6 @@ const TodoItem: React.FC<TodoItemProps> = ({
             data={child}
             prev={data.children && data.children[index - 1]}
             next={data.children && data.children[index + 1]}
-            isFirst={index === 0}
-            isLast={index === (data.children ? data.children.length - 1 : 0)}
             key={child.id}
           />
         ))}

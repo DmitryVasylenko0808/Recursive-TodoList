@@ -40,14 +40,14 @@ export class TodosService {
 
     async edit(data: EditTodoDTO, id: number): Promise<void> { 
         await this.prismaService.todo.update({
-            where: { id: Number(id) },
+            where: { id },
             data
         })
     }
 
     async toggle(data: ToggleTodoDTO, id: number): Promise<void> {
         const toggledTodo = await this.prismaService.todo.update({
-            where: { id: Number(id) },
+            where: { id },
             data: {
                 status: data.value
             },
@@ -55,7 +55,7 @@ export class TodosService {
 
         if (toggledTodo.parentId && !data.value) {
             await this.prismaService.todo.update({
-                where: { id: Number(toggledTodo.parentId) },
+                where: { id: toggledTodo.parentId },
                 data: {
                     status: data.value
                 }
@@ -67,20 +67,20 @@ export class TodosService {
 
     async delete(id: number): Promise<void> {
         await this.prismaService.todo.delete({ 
-            where: { id: Number(id) }  
+            where: { id }  
         });
     }
 
     async swap(firstId: number, secondId: number): Promise<void> {
         const firstTodo = await this.prismaService.todo.findUnique({
-            where: { id: Number(firstId) }
+            where: { id: firstId }
         });
         const secondTodo = await this.prismaService.todo.findUnique({
             where: { id: Number(secondId) }
         });
 
         const updateFirst = this.prismaService.todo.update({
-            where: { id: Number(firstId) },
+            where: { id: firstId },
             data: { order: secondTodo.order }
         });
         const updateSecond = this.prismaService.todo.update({

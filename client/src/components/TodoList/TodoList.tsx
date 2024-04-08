@@ -16,8 +16,6 @@ const TodoList: React.FC<TodoListProps> = ({ data }) => {
           data={item}
           prev={data[index - 1]}
           next={data[index + 1]}
-          isFirst={index === 0}
-          isLast={index === data.length - 1}
           key={item.id}
         />
       ))}

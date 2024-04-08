@@ -19,14 +19,14 @@ type ToogleTodoParams = {
 }
 
 type SwapTodosParams = {
-    firstId: number;
-    secondId: number;
+    id: number;
+    siblingId: number;
 }
 
 export const todosApi = createApi({
     reducerPath: "todosApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:3000/api"
+        baseUrl: "http://localhost:3000/api/todos"
     }),
     endpoints: builder => ({
         getTodos: builder.query<GetTodosDTO, void>({
@@ -58,16 +58,17 @@ export const todosApi = createApi({
         }),
         toggleTodo: builder.mutation<void, ToogleTodoParams>({
             query: ({ id, data }) => ({
-                url: `/toggle/${id}`,
+                url: `/${id}/toggle`,
                 method: "PATCH",
                 body: data
             }),
             invalidatesTags: ["Todo"]
         }),
         swapTodos: builder.mutation<void, SwapTodosParams>({
-            query: ({ firstId, secondId }) => ({
-                url: `/swap/${firstId}/${secondId}`,
-                method: "PATCH"
+            query: ({ id, siblingId }) => ({
+                url: `/${id}/swap`,
+                method: "PATCH",
+                body: { siblingId }
             }),
             invalidatesTags: ["Todo"]
         })
